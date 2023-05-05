@@ -21,34 +21,22 @@ jobs:
         uses: PromyLOPH/guix-install-action@v1
       - name: Build CV
         run: guix build --root=out --fallback -f guix.scm
-      - name: Work around upload-artifact bug...
-        # upload-artifact can not resolve the "out" symlink, hence this
-        # hack: <https://github.com/actions/upload-artifact/issues/92>.
-        run: cp -L out/cv.pdf cv.pdf
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-pages-artifact@v1
         with:
-          path: cv.pdf
-          name: mbakke.pdf
-          if-no-files-found: error
+          path: out/
 
   publish:
     name: Publish
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      packages: write
-      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Create directory
-        run: mkdir -p publish
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: mbakke.pdf
-          path: publish/mbakke.pdf
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./publish
+        id: deployment
+        uses: actions/deploy-pages@v2

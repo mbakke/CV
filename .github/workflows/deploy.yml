@@ -1,0 +1,50 @@
+---
+name: Deploy CV to GitHub Pages
+on: push
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+      - name: Guix cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/guix
+          key: guix-cache-${{ github.sha }}
+          restore-keys: |
+            guix-cache-
+      - name: Install Guix
+        uses: PromyLOPH/guix-install-action@v1
+      - name: Build CV
+        run: guix build --root=out --fallback -f guix.scm
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: out/cv.pdf
+          name: mbakke.pdf
+          if-no-files-found: error
+
+  publish:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Create directory
+        run: mkdir -p publish
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: mbakke.pdf
+          path: publish/mbakke.pdf
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./publish

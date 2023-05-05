@@ -21,10 +21,14 @@ jobs:
         uses: PromyLOPH/guix-install-action@v1
       - name: Build CV
         run: guix build --root=out --fallback -f guix.scm
+      - name: Work around upload-artifact bug...
+        # upload-artifact can not resolve the "out" symlink, hence this
+        # hack: <https://github.com/actions/upload-artifact/issues/92>.
+        run: cp -L out/cv.pdf cv.pdf
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          path: out/cv.pdf
+          path: cv.pdf
           name: mbakke.pdf
           if-no-files-found: error
 

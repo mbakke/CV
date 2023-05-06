@@ -1,6 +1,8 @@
 ---
 name: Deploy CV to GitHub Pages
-on: push
+on:
+  - push
+  - workflow_dispatch
 
 jobs:
   build:
@@ -21,10 +23,13 @@ jobs:
         uses: PromyLOPH/guix-install-action@v1
       - name: Build CV
         run: guix build --root=out --fallback -f guix.scm
+      - name: Work around permissions issue
+        # See <https://github.com/actions/deploy-pages/issues/58>.
+        run: cp -r -L --no-preserve=mode,ownership out/ artifact
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: out/
+          path: artifact/
 
   publish:
     name: Publish

@@ -51,15 +51,19 @@
                    (install-file "cv.pdf" #$output))))))
     (inputs
      (list
-      texlive-base
+      texlive-bookmark
       texlive-enumitem
       texlive-etoolbox
       texlive-everysel
+      texlive-fancyhdr
       texlive-fontspec
+      texlive-geometry
       texlive-hyperref
       texlive-ifmtarg
       texlive-lm-math
+      texlive-parskip
       texlive-ragged2e
+      texlive-scheme-basic
       texlive-setspace
       texlive-tcolorbox
       texlive-unicode-math
@@ -67,22 +71,17 @@
       texlive-xetex
       texlive-xifthen
 
-      texlive-sourcesanspro
-
-      texlive-latex-base
-      texlive-latex-bookmark
-      texlive-latex-fancyhdr
-      texlive-latex-geometry
-      texlive-latex-parskip
       ;; XXX: These are not directly required and should be propagated
       ;; from somewhere else.
-      texlive-latex-kvoptions
-      texlive-latex-trimspaces
-      texlive-latex-xkeyval
+      texlive-environ
+      texlive-pgf
+      texlive-tikzfill
+      texlive-xkeyval
 
       texlive-awesome-cv
       texlive-fontawesome5
-      texlive-roboto))
+      texlive-roboto
+      texlive-sourcesanspro))
     (synopsis "Build a CV")
     (description
      "This package contains my CV.")
@@ -109,58 +108,5 @@
       (synopsis "Awesome CV template")
       (description "This package contains a LaTeX template for crating a CV.")
       (license license:lppl1.3+))))
-
-(define simple-texlive-package
-  (@@ (gnu packages tex) simple-texlive-package))
-
-;; TODO: Upstream these!
-(define texlive-fontawesome5
-  (package
-    (inherit (simple-texlive-package
-              "texlive-fontawesome5"
-              '("/doc/fonts/fontawesome5/"
-                "/fonts/enc/dvips/fontawesome5/"
-                "/fonts/map/dvips/fontawesome5/"
-                "/fonts/opentype/public/fontawesome5/"
-                ;; ^ see comment on texlive-sourcesanspro
-                ;; Note: In theory we could use font-awesome from Guix,
-                ;; but in practice the versions may differ and results be
-                ;; subtly broken.
-                "/fonts/tfm/public/fontawesome5/"
-                "/fonts/type1/public/fontawesome5/"
-                "/tex/latex/fontawesome5/")
-              (base32
-               "1mxr1vbdiwnzjfy1mkb51zgslwncbgnzc97rxxlrvhxv29bj2lra")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/fontawesome5")
-    (synopsis "TeX support for the Font Awesome font family")
-    (description
-     "This package provides LaTeX support for the Font awesome icon set.")
-    (license (list license:lppl1.3+ license:silofl1.1))))
-
-(define texlive-roboto
-  (package
-    (inherit (simple-texlive-package
-              "texlive-roboto"
-              (list "/doc/fonts/roboto/"
-                    "/fonts/enc/dvips/roboto/"
-                    "/fonts/map/dvips/roboto/"
-                    "/fonts/opentype/google/roboto/"
-
-                    ;; XXX see comment aboute font-awesome
-                    "/fonts/tfm/google/roboto/"
-                    "/fonts/type1/google/roboto/"
-                    "/fonts/vf/google/roboto/"
-                    "/tex/latex/roboto/")
-              (base32
-               "1zly03wgrr5yjgpa8qxrxb01cqdk2yyc1vm1lzm270zrsgy6d0m2")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/roboto")
-    (synopsis "TeX support for the Roboto font family")
-    (description
-     "This package provides LATEX, pdfLATEX, XELATEX and LuaLATEX support
-for the Roboto Sans, Roboto Condensed, Roboto Mono, Roboto Slab and Roboto Serif
-families of fonts, designed by Christian Robertson and Greg Gazdowicz for Google.")
-    (license license:lppl1.3+)))
 
 cv
